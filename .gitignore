@@ -1,0 +1,7 @@
+.vscode/
+desktop.ini
+/src/installShell.sh
+priv-*.cfg.sh
+local.*
+*.fr.conf
+/src/bin/ca/
