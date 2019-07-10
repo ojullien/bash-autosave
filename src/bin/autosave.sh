@@ -3,8 +3,8 @@
 ## Linux Scripts.
 ## Auto save.
 ##
-## @package ojullien\Shell\bin
-## @license MIT <https://github.com/ojullien/Shell/blob/master/LICENSE>
+## @package ojullien\bash\bin
+## @license MIT <https://github.com/ojullien/bash-# you may want to update this line !/blob/master/LICENSE>
 ## -----------------------------------------------------------------------------
 #set -o errexit
 set -o nounset

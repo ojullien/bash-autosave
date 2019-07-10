@@ -1,17 +1,17 @@
 #!/bin/bash
 ## -----------------------------------------------------------------------------
 ## Linux Scripts.
-## Install the Shell project into the /opt/Shell directory.
+## Install the bash-autosave project into the /opt/oju/bash directory.
 ##
-## @package ojullien\Shell
-## @license MIT <https://github.com/ojullien/Shell/blob/master/LICENSE>
+## @package ojullien\bash\scripts
+## @license MIT <https://github.com/ojullien/bash-autosave/blob/master/LICENSE>
 ## -----------------------------------------------------------------------------
 #set -o errexit
 set -o nounset
 set -o pipefail
 
 ## -----------------------------------------------------------------------------
-## Shell scripts directory, eg: /opt/Shell/scripts/
+## Current project directory, eg: /opt/Shell/scripts/
 ## -----------------------------------------------------------------------------
 readonly m_DIR_REALPATH="$(realpath "$(dirname "$0")")"
 
@@ -24,20 +24,16 @@ readonly m_DATE="$(date +"%Y%m%d")_$(date +"%H%M")"
 ## Defines main directories
 ## -----------------------------------------------------------------------------
 
-# Directory holds system files
-readonly m_DIR_SYS="$(realpath "${m_DIR_REALPATH}/../src/sys")"
-# Directory holds apps
-readonly m_DIR_APP="$(realpath "${m_DIR_REALPATH}/../src/app")"
-# Directory destination
-readonly m_INSTALLSHELL_DIR_SOURCE="$(realpath "${m_DIR_REALPATH}/../src")"
-# Directory destination
-readonly m_INSTALLSHELL_DIR_DESTINATION="/opt/oju"
-# Directory to install
-readonly m_INSTALLSHELL_PROJECT_NAME="Shell"
-# Cron.daily file destination
-readonly m_INSTALLCRON_DESTINATION="/etc/cron.daily/priv-autosave"
-# Cron.daily file source
-readonly m_INSTALLCRON_SOURCE="${m_DIR_REALPATH}/cron/priv-autosave"
+# DESTINATION
+readonly m_INSTALL_DESTINATION_DIR="/opt/oju/bash"
+readonly m_DIR_APP="${m_INSTALL_DESTINATION_DIR}/app" # Directory holds apps
+readonly m_DIR_BIN="${m_INSTALL_DESTINATION_DIR}/bin" # Directory holds app entry point
+readonly m_DIR_SYS="${m_INSTALL_DESTINATION_DIR}/sys" # Directory holds system files
+
+# SOURCE
+readonly m_INSTALL_APP_NAME="autosave"
+readonly m_INSTALL_SOURCE_APP_DIR="$(realpath "${m_DIR_REALPATH}/../src/app/${m_INSTALL_APP_NAME}")"
+readonly m_INSTALL_SOURCE_BIN_FILE="$(realpath "${m_DIR_REALPATH}/../src/bin/${m_INSTALL_APP_NAME}.sh")"
 
 ## -----------------------------------------------------------------------------
 ## Defines main files
@@ -59,12 +55,11 @@ readonly COLORRESET="$(tput -Txterm sgr0)"
 Constant::trace() {
     String::separateLine
     String::notice "Main configuration"
-    FileSystem::checkDir "\tScript directory:\t\t${m_DIR_REALPATH}" "${m_DIR_REALPATH}"
+    FileSystem::checkDir "\tSource directory:\t\t${m_DIR_REALPATH}" "${m_DIR_REALPATH}"
     FileSystem::checkDir "\tSystem directory:\t\t${m_DIR_SYS}" "${m_DIR_SYS}"
-    FileSystem::checkDir "\tApp directory:\t\t\t${m_DIR_APP}" "${m_DIR_APP}"
+    FileSystem::checkDir "\tDestination app directory:\t${m_DIR_APP}" "${m_DIR_APP}"
+    FileSystem::checkDir "\tDestination bin directory:\t${m_DIR_BIN}" "${m_DIR_BIN}"
     FileSystem::checkFile "\tLog file is:\t\t\t${m_LOGFILE}" "${m_LOGFILE}"
-    String::notice "Distribution"
-    (( m_OPTION_DISPLAY )) && lsb_release --all
     return 0
 }
 
@@ -88,21 +83,18 @@ Constant::trace() {
 ((m_OPTION_SHOWHELP)) && Option::showHelp && exit 0
 
 ## -----------------------------------------------------------------------------
-## Install packages system
+## bash-sys must exists
 ## -----------------------------------------------------------------------------
-String::separateLine
-apt-get install "lsb-release" --yes --quiet
-Console::waitUser
+if [[ ! -d "${m_DIR_SYS}" ]]; then
+    String::error "bash-sys is not installed on ${m_DIR_SYS}"
+    exit 1
+fi
 
 ## -----------------------------------------------------------------------------
 ## Trace
 ## -----------------------------------------------------------------------------
 Constant::trace
-String::separateLine
-String::notice "App configuration: installShell"
-FileSystem::checkDir "\tSource directory:\t${m_INSTALLSHELL_DIR_SOURCE}" "${m_INSTALLSHELL_DIR_SOURCE}"
-FileSystem::checkDir "\tDestination directory:\t${m_INSTALLSHELL_DIR_DESTINATION}" "${m_INSTALLSHELL_DIR_DESTINATION}"
-String::notice "\tProject name:\t\t${m_INSTALLSHELL_PROJECT_NAME}"
+Console::waitUser
 
 ## -----------------------------------------------------------------------------
 ## Start
@@ -112,57 +104,45 @@ String::notice "Today is: $(date -R)"
 String::notice "The PID for $(basename "$0") process is: $$"
 Console::waitUser
 
-FileSystem::removeDirectory "${m_INSTALLSHELL_DIR_DESTINATION}/${m_INSTALLSHELL_PROJECT_NAME}"
-iReturn=$?
-((0!=iReturn)) && return ${iReturn}
+#FileSystem::removeDirectory "${m_DIR_APP}/${m_INSTALL_APP_NAME}"
+#iReturn=$?
+#((0!=iReturn)) && exit ${iReturn}
 
-FileSystem::createDirectory "${m_INSTALLSHELL_DIR_DESTINATION}"
+FileSystem::removeDirectory "${m_DIR_BIN}/${m_INSTALL_APP_NAME}.sh"
 iReturn=$?
-((0!=iReturn)) && return ${iReturn}
+((0!=iReturn)) && exit ${iReturn}
 
-FileSystem::moveFile "${m_INSTALLSHELL_DIR_SOURCE}" "${m_INSTALLSHELL_DIR_DESTINATION}/${m_INSTALLSHELL_PROJECT_NAME}"
+FileSystem::copyFile "${m_INSTALL_SOURCE_APP_DIR}" "${m_DIR_APP}"
 iReturn=$?
-((0!=iReturn)) && return ${iReturn}
+((0!=iReturn)) && exit ${iReturn}
+Console::waitUser
+
+FileSystem::copyFile "${m_INSTALL_SOURCE_BIN_FILE}" "${m_DIR_BIN}"
+iReturn=$?
+((0!=iReturn)) && exit ${iReturn}
+Console::waitUser
 
 String::notice -n "Change owner:"
-chown -R root:root "${m_INSTALLSHELL_DIR_DESTINATION}"
+chown -R root:root "${m_DIR_APP}/${m_INSTALL_APP_NAME}" "${m_DIR_BIN}/${m_INSTALL_APP_NAME}.sh"
 iReturn=$?
 String::checkReturnValueForTruthiness ${iReturn}
-((0!=iReturn)) && return ${iReturn}
+((0!=iReturn)) && exit ${iReturn}
+Console::waitUser
 
-String::notice -n "Change common directories access rights:"
-find "${m_INSTALLSHELL_DIR_DESTINATION}" -type d -exec chmod u=rwx,g=rx,o=rx {} \;
+String::notice -n "Change directory access rights:"
+find "${m_DIR_APP}" -type d -name "${m_INSTALL_APP_NAME}" -exec chmod u=rwx,g=rx,o=rx {} \;
 iReturn=$?
 String::checkReturnValueForTruthiness ${iReturn}
-((0!=iReturn)) && return ${iReturn}
-
-String::notice -n "Change log directory access rights:"
-find "${m_INSTALLSHELL_DIR_DESTINATION}/${m_INSTALLSHELL_PROJECT_NAME}/log" -type d -exec chmod u=rwx,g=rwx,o=rwx {} \;
-iReturn=$?
-String::checkReturnValueForTruthiness ${iReturn}
-((0!=iReturn)) && return ${iReturn}
+((0!=iReturn)) && exit ${iReturn}
 
 String::notice -n "Change files access rights:"
-find "${m_INSTALLSHELL_DIR_DESTINATION}/${m_INSTALLSHELL_PROJECT_NAME}" -type f -exec chmod u=rw,g=r,o=r {} \;
+find "${m_DIR_APP}/${m_INSTALL_APP_NAME}" -type f -exec chmod u=rw,g=r,o=r {} \;
 iReturn=$?
 String::checkReturnValueForTruthiness ${iReturn}
-((0!=iReturn)) && return ${iReturn}
+((0!=iReturn)) && exit ${iReturn}
 
 String::notice -n "Change sh files access rights:"
-chmod +x ${m_INSTALLSHELL_DIR_DESTINATION}/${m_INSTALLSHELL_PROJECT_NAME}/bin/*.sh
-iReturn=$?
-String::checkReturnValueForTruthiness ${iReturn}
-((0!=iReturn)) && return ${iReturn}
-
-String::notice "Configuring cron.daily ..."
-FileSystem::copyFile "${m_INSTALLCRON_SOURCE}" "${m_INSTALLCRON_DESTINATION}"
-iReturn=$?
-String::notice -n "Configure cron.daily:"
-String::checkReturnValueForTruthiness ${iReturn}
-((0!=iReturn)) && return ${iReturn}
-
-String::notice -n "Change cron.daily access rights:"
-chmod u=rwx,g=rx,o=rx "${m_INSTALLCRON_DESTINATION}"
+chmod +x "${m_DIR_BIN}/${m_INSTALL_APP_NAME}.sh"
 iReturn=$?
 String::checkReturnValueForTruthiness ${iReturn}
 ((0!=iReturn)) && return ${iReturn}

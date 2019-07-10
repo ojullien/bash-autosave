@@ -2,8 +2,8 @@
 ## Linux Scripts.
 ## AutoSave app configuration file.
 ##
-## @package ojullien\Shell\app\autosave
-## @license MIT <https://github.com/ojullien/Shell/blob/master/LICENSE>
+## @package ojullien\autosave\app\autosave
+## @license MIT <https://github.com/ojullien/bash-autosave/blob/master/LICENSE>
 ## -----------------------------------------------------------------------------
 
 # Remove these 3 lines once you have configured this file
@@ -14,7 +14,7 @@ exit 3
 ## -----------------------------------------------------------------------------
 ## App Directories
 ## -----------------------------------------------------------------------------
-readonly m_AUTOSAVE_UPLOAD_DIRECTORY_OWNER="<user>"
+readonly m_AUTOSAVE_UPLOAD_DIRECTORY_OWNER="<user>" # you may want to update this line !
 
 ## -----------------------------------------------------------------------------
 ## App Directories
@@ -33,9 +33,9 @@ readonly m_LOGWATCH_FILE="${m_AUTOSAVE_DIR_CACHE}/${m_DATE}/logwatch-${m_DATE}.t
 ## -----------------------------------------------------------------------------
 ## Ftp
 ## -----------------------------------------------------------------------------
-readonly m_FTP_SRV="<server.domain.net>"
-readonly m_FTP_USR="<user>"
-readonly m_FTP_PWD="<***>"
+readonly m_FTP_SRV="<server.domain.net>" # you may want to update this line !
+readonly m_FTP_USR="<user>" # you may want to update this line !
+readonly m_FTP_PWD="<***>" # you may want to update this line !
 
 ## -----------------------------------------------------------------------------
 ## Trace
