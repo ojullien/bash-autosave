@@ -1,6 +1,6 @@
 # Bash-AutoSave
 
-Simple tool for saving system logsand web logs into a timestamped bz2 archive and sending it to a ftp server.
+Simple tool for saving system logs and web logs into a timestamped bz2 archive and sending it to a ftp server.
 
 *Note: I use this script for my own projects, it contains only the features I need.*
 
@@ -10,7 +10,7 @@ Simple tool for saving system logsand web logs into a timestamped bz2 archive an
 
 ## Installation
 
-Requires: a Debian/Ubuntu version of linux and a Bash version ~4.4. [bash-sys](https://github.com/ojullien/bash-sys) installed.
+Requires: a Debian/Ubuntu version of linux and a Bash version ~4.4. [bash-sys](https://github.com/ojullien/bash-sys), [bash-clean](https://github.com/ojullien/bash-clean) and [bash-manageservices](https://github.com/ojullien/bash-manageservices) are installed.
 
 1. [Download a release](https://github.com/ojullien/bash-autosave/releases) or clone this repository.
 2. Use [scripts/install.sh](scripts/install.sh) to automatically install the application in the /opt/oju/bash project folder.

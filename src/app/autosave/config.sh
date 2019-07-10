@@ -2,7 +2,7 @@
 ## Linux Scripts.
 ## AutoSave app configuration file.
 ##
-## @package ojullien\autosave\app\autosave
+## @package ojullien\bash\app\autosave
 ## @license MIT <https://github.com/ojullien/bash-autosave/blob/master/LICENSE>
 ## -----------------------------------------------------------------------------
 

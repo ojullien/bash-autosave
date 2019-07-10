@@ -1,10 +1,11 @@
 #!/bin/bash
 ## -----------------------------------------------------------------------------
 ## Linux Scripts.
-## Auto save.
+## Simple tool for saving system logs and web logs into a timestamped bz2
+## archive and sending it to a ftp server.
 ##
 ## @package ojullien\bash\bin
-## @license MIT <https://github.com/ojullien/bash-# you may want to update this line !/blob/master/LICENSE>
+## @license MIT <https://github.com/ojullien/bash-autosave/blob/master/LICENSE>
 ## -----------------------------------------------------------------------------
 #set -o errexit
 set -o nounset
