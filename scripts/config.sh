@@ -20,11 +20,13 @@ readonly m_INSTALL_DESTINATION_DIR="/opt/oju/bash"
 readonly m_DIR_APP="${m_INSTALL_DESTINATION_DIR}/app" # Directory holds apps
 readonly m_DIR_BIN="${m_INSTALL_DESTINATION_DIR}/bin" # Directory holds app entry point
 readonly m_DIR_SYS="${m_INSTALL_DESTINATION_DIR}/sys" # Directory holds system files
+readonly m_DIR_CRON="/etc/cron.daily" # Directory holds cron files
 
 # SOURCE
 readonly m_INSTALL_APP_NAME="autosave"
 readonly m_INSTALL_SOURCE_APP_DIR="$(realpath "${m_DIR_REALPATH}/../src/app/${m_INSTALL_APP_NAME}")"
 readonly m_INSTALL_SOURCE_BIN_FILE="$(realpath "${m_DIR_REALPATH}/../src/bin/${m_INSTALL_APP_NAME}.sh")"
+readonly m_INSTALL_SOURCE_CRON_FILE="$(realpath "${m_DIR_REALPATH}/../src/cron/oju_bash_autosave")"
 
 ## -----------------------------------------------------------------------------
 ## Defines main files

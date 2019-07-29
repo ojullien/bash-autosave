@@ -66,5 +66,10 @@ Install::run() {
     String::checkReturnValueForTruthiness ${iReturn}
     ((0!=iReturn)) && return ${iReturn}
 
+    FileSystem::copyFile "${m_INSTALL_SOURCE_CRON_FILE}" "${m_DIR_CRON}"
+    iReturn=$?
+    ((0!=iReturn)) && return ${iReturn}
+    Console::waitUser
+
     return ${iReturn}
 }
