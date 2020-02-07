@@ -130,7 +130,7 @@ String::separateLine
 String::notice "Compressing ..."
 cd "${m_AUTOSAVE_DIR_CACHE}" || exit 18
 FileSystem::compressFile "${m_AUTOSAVE_DIR_UPLOAD}/${m_DATE}" "${m_DATE}"
-cd - || exit 18
+cd ~- || exit 18
 Console::waitUser
 
 ## -----------------------------------------------------------------------------
