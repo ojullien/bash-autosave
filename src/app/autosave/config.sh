@@ -29,6 +29,7 @@ readonly m_AUTOSAVE_DIR_UPLOAD="/home/${m_AUTOSAVE_UPLOAD_DIRECTORY_OWNER}/out/a
 ## Files
 ## -----------------------------------------------------------------------------
 readonly m_LOGWATCH_FILE="${m_AUTOSAVE_DIR_CACHE}/${m_DATE}/logwatch-${m_DATE}.txt"
+readonly m_FTPERR_FILE="${m_AUTOSAVE_DIR_CACHE}/${m_DATE}/ftp-${m_DATE}.err"
 
 ## -----------------------------------------------------------------------------
 ## Ftp
@@ -45,6 +46,7 @@ AutoSave::trace() {
     String::notice "App configuration: AutoSave"
     FileSystem::checkDir "\tCache directory:\t${m_AUTOSAVE_DIR_CACHE}" "${m_AUTOSAVE_DIR_CACHE}"
     FileSystem::checkDir "\tUpload directory:\t${m_AUTOSAVE_DIR_UPLOAD}" "${m_AUTOSAVE_DIR_UPLOAD}"
-    String::notice "\tLogwatch file:\t${m_LOGWATCH_FILE}"
+    FileSystem::checkFile "\tLogwatch file:\t\t${m_LOGWATCH_FILE}" "${m_LOGWATCH_FILE}"
+    FileSystem::checkFile "\tFTP err file:\t\t${m_FTPERR_FILE}" "${m_FTPERR_FILE}"
     return 0
 }
